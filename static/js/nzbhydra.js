@@ -656,6 +656,26 @@ UpdateService.$inject = ["$http", "growl", "blockUI", "RestartService"];
 
 angular
     .module('nzbhydraApp')
+    .controller('UpdateFooterController', UpdateFooterController);
+
+function UpdateFooterController($scope, $http, UpdateService) {
+    
+    $http.get("internalapi/get_versions").then(function(data) {
+        console.log(data);
+        $scope.currentVersion = data.data.currentVersion;
+        $scope.repVersion = data.data.repVersion;
+        $scope.updateAvailable = data.data.updateAvailable;
+    });
+
+    $scope.update = function () {
+        UpdateService.update();
+    }
+
+}
+UpdateFooterController.$inject = ["$scope", "$http", "UpdateService"];
+
+angular
+    .module('nzbhydraApp')
     .factory('StatsService', StatsService);
 
 function StatsService($http) {
@@ -2336,13 +2356,33 @@ function ConfigFields() {
                             }
                         },
                         {
-                            key: 'baseUrl',
+                            key: 'urlBase',
                             type: 'horizontalInput',
                             templateOptions: {
                                 type: 'text',
-                                label: 'Base URL',
-                                placeholder: 'http://127.0.0.1:5075',
-                                help: 'Set if the external URL is different from the local URL'
+                                label: 'URL base',
+                                placeholder: '/nzbhydra',
+                                help: 'Set when using an external proxy'
+                            }
+                        },
+                        {
+                            key: 'externalUrl',
+                            type: 'horizontalInput',
+                            templateOptions: {
+                                type: 'text',
+                                label: 'External URL',
+                                placeholder: 'https://www.somedomain.com/nzbhydra/',
+                                help: 'Set to the full external URL so machines outside can use the generated NZB links.'
+                            }
+                        },
+                        {
+                            key: 'useLocalUrlForApiAccess',
+                            type: 'horizontalSwitch',
+                            hideExpression: '!model.externalUrl',
+                            templateOptions: {
+                                type: 'switch',
+                                label: 'Use local address in API results',
+                                help: 'Disable to make API results use the external URL in NZB links.'
                             }
                         },
                         {
@@ -3587,7 +3627,6 @@ function AboutController($scope, versionsPromise, UpdateService) {
 
     $scope.update = function () {
         UpdateService.update();
-    
     }
 
 }
