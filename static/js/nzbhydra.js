@@ -2158,6 +2158,11 @@ angular
                         name: "Drunken Slug",
                         host: "https://drunkenslug.com",
                         searchIds: ["tvdbid", "imdbid", "tvmazeid", "traktid", "tmdbid"]
+                    },
+                    {
+                        name: "nzb.is",
+                        host: "https://nzb.is/api",
+                        searchIds: ["tvdbid", "rid", "imdbid"]
                     }
 
                 ];
